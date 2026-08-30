@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตารางแข่งปีการศึกษา 2569 - Competition Portal</title>
+  <style>
+    /* Reset & Base Fonts */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Prompt", sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Navigation / Header */
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+    }
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      font-size: 11px;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    .brand-text p {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Action Buttons in Header */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .view-switch {
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      display: flex;
+      gap: 4px;
+    }
+    .view-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .view-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .btn-add {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-add:hover {
+      background: #0369a1;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 640px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .stat-card {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .icon-blue { background: #eff6ff; color: #2563eb; }
+    .icon-purple { background: #faf5ff; color: #7c3aed; }
+    .icon-green { background: #f0fdf4; color: #16a34a; }
+    .icon-rose { background: #fff1f2; color: #e11d48; }
+
+    /* Control Panel */
+    .control-panel {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-bar:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .tabs-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #475569;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+    .select-group {
+      display: flex;
+      gap: 8px;
+    }
+    .select-ctrl {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 700px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .comp-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+    .comp-card:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-inter { background: #f3e8ff; color: #6b21a8; }
+    .badge-national { background: #dcfce7; color: #15803d; }
+    .badge-type { background: #f1f5f9; color: #475569; }
+
+    .days-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .days-urgent {
+      background: #ffe4e6;
+      color: #be123c;
+      animation: blink 2s infinite ease-in-out;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+
+    .card-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .card-emoji {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      background: #f8fafc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid #f1f5f9;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .card-title:hover {
+      color: #0284c7;
+    }
+
+    .tags-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .card-footer {
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-date-label {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .footer-date-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .card-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-detail {
+      background: #f1f5f9;
+      color: #334155;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-detail:hover {
+      background: #e2e8f0;
+    }
+    .btn-link {
+      background: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .btn-link:hover {
+      background: #0369a1;
+    }
+
+    /* Table View */
+    .table-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* Empty state */
+    .empty-state {
+      background: #ffffff;
+      padding: 48px 20px;
+      text-align: center;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .empty-state h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 8px;
+    }
+    .empty-state p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0284c7, #4338ca);
+      color: white;
+      padding: 20px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .modal-body {
+      padding: 20px;
+      font-size: 13px;
+    }
+    .info-list {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .info-item:last-child {
+      border-bottom: none;
+    }
+    .info-item .lbl {
+      color: #64748b;
+    }
+    .info-item .val {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .modal-footer {
+      background: #f8fafc;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: #0284c7;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <div class="brand-group">
+        <div class="brand-icon">🏆</div>
+        <div class="brand-text">
+          <h1>ตารางแข่งปีการศึกษา 2569 <span class="brand-badge">AppSheet View</span></h1>
+          <p>ศูนย์รวมข้อมูลและลิงก์สมัครแข่งขันทุกรายการ</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <div class="view-switch">
+          <button id="viewCardBtn" class="view-btn active" onclick="switchView('card')">🗂️ การ์ด</button>
+          <button id="viewTableBtn" class="view-btn" onclick="switchView('table')">📋 ตาราง</button>
+        </div>
+        <button class="btn-add" onclick="openModal('addModal')">➕ เพิ่มรายการ</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Quick Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">รายการทั้งหมด</div>
+          <div id="statTotal" class="stat-value">0</div>
+        </div>
+        <div class="stat-icon icon-blue">📌</div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">ระดับนานาชาติ</div>
+          <div id="statInter" class="stat-value">0</div>
+        </div>
+        <div class="stat-icon icon-purple">🌍</div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">ระดับชาติ</div>
+          <div id="statNational" class="stat-value">0</div>
+        </div>
+        <div class="stat-icon icon-green">🇹🇭</div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">ด่วน! ใกล้ปิดรับ</div>
+          <div id="statUrgent" class="stat-value">0</div>
+        </div>
+        <div class="stat-icon icon-rose">⏳</div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="control-panel">
+      <input type="text" id="searchInput" class="search-bar" placeholder="🔎 ค้นหาชื่อรายการแข่ง, หมวดหมู่, ประเภท..." oninput="renderData()">
+      
+      <div class="filter-row">
+        <div class="tabs-group">
+          <button class="tab-btn active" data-lvl="all" onclick="setLevelFilter('all')">ทั้งหมด</button>
+          <button class="tab-btn" data-lvl="ระดับนานาชาติ" onclick="setLevelFilter('ระดับนานาชาติ')">🌍 ระดับนานาชาติ</button>
+          <button class="tab-btn" data-lvl="ระดับชาติ" onclick="setLevelFilter('ระดับชาติ')">🇹🇭 ระดับชาติ</button>
+        </div>
+
+        <div class="select-group">
+          <select id="typeFilter" class="select-ctrl" onchange="renderData()">
+            <option value="all">รูปแบบ: ทั้งหมด</option>
+            <option value="เดี่ยว">เดี่ยว</option>
+            <option value="กลุ่ม">กลุ่ม</option>
+          </select>
+          <select id="sortOrder" class="select-ctrl" onchange="renderData()">
+            <option value="deadline-asc">เรียง: วันปิดรับใกล้สุด</option>
+            <option value="deadline-desc">เรียง: วันปิดรับไกลสุด</option>
+            <option value="name-asc">เรียง: ชื่อ ก-ฮ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main View Content -->
+    <div id="cardView" class="cards-grid"></div>
+    
+    <div id="tableView" class="table-card hidden">
+      <table>
+        <thead>
+          <tr>
+            <th>ระดับ</th>
+            <th>ชื่อรายการแข่งขัน</th>
+            <th>ประเภท</th>
+            <th>วันปิดรับสมัคร</th>
+            <th style="text-align: right;">เปิดดู</th>
+          </tr>
+        </thead>
+        <tbody id="tableRows"></tbody>
+      </table>
+    </div>
+
+    <div id="emptyView" class="empty-state hidden">
+      <div style="font-size: 36px;">🔍</div>
+      <h3>ไม่พบรายการแข่งขันที่ตรงกับเงื่อนไข</h3>
+      <p>ลองปรับคำค้นหาหรือตัวกรองใหม่อีกครั้ง</p>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+        <div id="modalBadges" style="margin-bottom: 6px;"></div>
+        <h2 id="modalTitle" style="font-size: 16px; font-weight: 700; line-height: 1.4;"></h2>
+      </div>
+      <div class="modal-body">
+        <div class="info-list">
+          <div class="info-item"><span class="lbl">ระดับการแข่งขัน:</span><span id="modalLevel" class="val"></span></div>
+          <div class="info-item"><span class="lbl">ประเภทผู้สมัคร:</span><span id="modalType" class="val"></span></div>
+          <div class="info-item"><span class="lbl">วันปิดรับสมัคร:</span><span id="modalDeadline" class="val" style="color:#e11d48;"></span></div>
+          <div class="info-item"><span class="lbl">สถานะ:</span><span id="modalStatus" class="val"></span></div>
+        </div>
+        <label class="form-label">ลิงก์รับสมัคร / ข้อมูลทางการ</label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="modalUrlInput" class="form-input" readonly>
+          <button id="copyBtn" onclick="copyModalLink()" class="btn-detail" style="white-space: nowrap;">คัดลอก</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-detail" onclick="closeModal('detailModal')">ปิด</button>
+        <a id="modalGoBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn-link">ไปยังหน้าสมัคร ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Item Modal -->
+  <div id="addModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header" style="background: #0f172a;">
+        <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+        <h2 style="font-size: 16px; font-weight: 700;">➕ เพิ่มรายการแข่งขันใหม่</h2>
+      </div>
+      <form onsubmit="handleAddItem(event)" style="padding: 20px;">
+        <div class="form-group">
+          <label class="form-label">ชื่อรายการแข่งขัน *</label>
+          <input type="text" id="addTitle" class="form-input" required placeholder="เช่น การประกวดแผนธุรกิจนวัตกรรม...">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">ระดับ *</label>
+            <select id="addLevel" class="form-input">
+              <option value="ระดับชาติ">ระดับชาติ</option>
+              <option value="ระดับนานาชาติ">ระดับนานาชาติ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ประเภทผู้สมัคร *</label>
+            <input type="text" id="addType" class="form-input" required placeholder="เช่น เดี่ยว หรือ กลุ่ม 3-5 คน">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">วันปิดรับสมัคร (วว/ดด/ปป) *</label>
+          <input type="text" id="addDeadline" class="form-input" required placeholder="เช่น 15/09/26">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ลิงก์รับสมัคร (URL) *</label>
+          <input type="url" id="addUrl" class="form-input" required placeholder="https://...">
+        </div>
+        <div style="display:flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+          <button type="button" class="btn-detail" onclick="closeModal('addModal')">ยกเลิก</button>
+          <button type="submit" class="btn-link" style="border:none; cursor:pointer;">บันทึกรายการ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Alert -->
+  <div id="toast" class="toast hidden">
+    <span>✅</span>
+    <span id="toastMsg">ดำเนินการเรียบร้อย</span>
+  </div>
+
+  <script>
+    // Data list from Google Sheet
+    const initialCompetitions = [
+      {
+        id: "c1",
+        level: "ระดับชาติ",
+        title: "ความฝันที่อยากให้เป็นจริง (มูลนิธิตั้งเซ็กกิม)",
+        type: "เดี่ยว",
+        deadlineStr: "31/08/26",
+        url: "https://www.nanmee.com/news_event.php?fieldID=196",
+        tags: ["ศิลปะ", "ทุนการศึกษา", "สร้างสรรค์"],
+        icon: "🎨"
+      },
+      {
+        id: "c2",
+        level: "ระดับนานาชาติ",
+        title: "Ten Outstanding Young Persons (TOYP) 2026",
+        type: "เดี่ยว",
+        deadlineStr: "08/09/26",
+        url: "https://drive.google.com/file/d/1ZE4lCiFScN6RcsYKw6sR4iCBekVYLlP8/view",
+        tags: ["เยาวชนดีเด่น", "ผู้นำระดับโลก"],
+        icon: "🌟"
+      },
+      {
+        id: "c3",
+        level: "ระดับชาติ",
+        title: "Egat-greeni ปีที่ 3 : ประกวดแนวคิดด้านนวัตกรรมสิ่งแวดล้อม",
+        type: "กลุ่ม 3-5 คน",
+        deadlineStr: "09/09/26",
+        url: "https://www.camphub.in.th/egat-green-i-3/",
+        tags: ["นวัตกรรม", "สิ่งแวดล้อม", "กฟผ."],
+        icon: "🌱"
+      },
+      {
+        id: "c4",
+        level: "ระดับชาติ",
+        title: "MEA Creator: ประกวดคลิปสั้นผ่านติ๊กตอก ชีวิตติด easy แค่มี MEA Digital",
+        type: "เดี่ยว",
+        deadlineStr: "09/09/26",
+        url: "https://www.camphub.in.th/mea-creator/",
+        tags: ["TikTok", "คลิปสั้น", "การไฟฟ้า"],
+        icon: "🎬"
+      },
+      {
+        id: "c5",
+        level: "ระดับชาติ",
+        title: "X Campus Ads Idea Contest Season 9",
+        type: "เดี่ยว / กลุ่มไม่เกิน 4 คน",
+        deadlineStr: "10/09/26",
+        url: "https://www.x-campuscontest.com/",
+        tags: ["การตลาด", "โฆษณา", "Digital Ads"],
+        icon: "💡"
+      },
+      {
+        id: "c6",
+        level: "ระดับชาติ",
+        title: "J-MAT (Prompt Post) สมาคมการตลาดแห่งประเทศไทย",
+        type: "กลุ่ม 3-10 คน",
+        deadlineStr: "10/09/26",
+        url: "https://tinyurl.com/2x47tyer",
+        tags: ["การตลาด", "Business"],
+        icon: "📈"
+      },
+      {
+        id: "c7",
+        level: "ระดับชาติ",
+        title: "Youth for change: The mindful future contest",
+        type: "กลุ่ม 3-5 คน",
+        deadlineStr: "13/09/26",
+        url: "https://www.camphub.in.th/youth-for-change-the-mindful-future-contest/",
+        tags: ["เพื่อสังคม", "เยาวชน", "Social Impact"],
+        icon: "🤝"
+      }
+    ];
+
+    let items = [...initialCompetitions];
+    let selectedLevel = 'all';
+    let currentView = 'card';
+
+    // Date Helpers
+    function parseDate(str) {
+      if (!str) return new Date(2099, 0, 1);
+      const parts = str.split('/');
+      if (parts.length === 3) {
+        const d = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        let y = parseInt(parts[2], 10);
+        if (y < 100) y += 2000;
+        else if (y > 2500) y -= 543;
+        return new Date(y, m, d, 23, 59, 59);
+      }
+      return new Date(str);
+    }
+
+    function calculateDaysLeft(deadlineStr) {
+      const target = parseDate(deadlineStr);
+      // Fixed base date: 30 August 2026
+      const baseToday = new Date(2026, 7, 30);
+      const diff = target.getTime() - baseToday.getTime();
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function formatThaiDate(str) {
+      const d = parseDate(str);
+      if (isNaN(d.getTime())) return str;
+      const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear() + 543}`;
+    }
+
+    function updateStats() {
+      document.getElementById('statTotal').innerText = items.length;
+      document.getElementById('statInter').innerText = items.filter(x => x.level.includes('นานาชาติ')).length;
+      document.getElementById('statNational').innerText = items.filter(x => x.level.includes('ระดับชาติ')).length;
+      document.getElementById('statUrgent').innerText = items.filter(x => {
+        const d = calculateDaysLeft(x.deadlineStr);
+        return d >= 0 && d <= 5;
+      }).length;
+    }
+
+    function renderData() {
+      const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const typeFilter = document.getElementById('typeFilter').value;
+      const sortOrder = document.getElementById('sortOrder').value;
+
+      let filtered = items.filter(item => {
+        const matchQuery = !query || 
+          item.title.toLowerCase().includes(query) ||
+          item.level.toLowerCase().includes(query) ||
+          item.type.toLowerCase().includes(query);
+
+        const matchLevel = (selectedLevel === 'all') || (item.level.toLowerCase() === selectedLevel.toLowerCase());
+
+        let matchType = true;
+        if (typeFilter === 'เดี่ยว') matchType = item.type.includes('เดี่ยว');
+        if (typeFilter === 'กลุ่ม') matchType = item.type.includes('กลุ่ม');
+
+        return matchQuery && matchLevel && matchType;
+      });
+
+      // Sorting
+      filtered.sort((a, b) => {
+        if (sortOrder === 'deadline-asc') return parseDate(a.deadlineStr) - parseDate(b.deadlineStr);
+        if (sortOrder === 'deadline-desc') return parseDate(b.deadlineStr) - parseDate(a.deadlineStr);
+        if (sortOrder === 'name-asc') return a.title.localeCompare(b.title, 'th');
+        return 0;
+      });
+
+      const cardView = document.getElementById('cardView');
+      const tableRows = document.getElementById('tableRows');
+      const emptyView = document.getElementById('emptyView');
+
+      if (filtered.length === 0) {
+        emptyView.classList.remove('hidden');
+        cardView.innerHTML = '';
+        tableRows.innerHTML = '';
+        return;
+      }
+      emptyView.classList.add('hidden');
+
+      // Render Cards
+      cardView.innerHTML = filtered.map(item => {
+        const days = calculateDaysLeft(item.deadlineStr);
+        const isInter = item.level.includes('นานาชาติ');
+        const isUrgent = days >= 0 && days <= 3;
+        
+        let daysHtml = `<span class="days-badge">เหลือ ${days} วัน</span>`;
+        if (days < 0) {
+          daysHtml = `<span class="days-badge" style="background:#f1f5f9; color:#64748b;">ปิดรับแล้ว</span>`;
+        } else if (isUrgent) {
+          daysHtml = `<span class="days-badge days-urgent">⚠️ ด่วน! ${days} วัน</span>`;
+        }
+
+        return `
+          <div class="comp-card">
+            <div>
+              <div class="card-top">
+                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                  <span class="badge-pill ${isInter ? 'badge-inter' : 'badge-national'}">${isInter ? '🌍 นานาชาติ' : '🇹🇭 ระดับชาติ'}</span>
+                  <span class="badge-pill badge-type">👤 ${escapeHtml(item.type)}</span>
+                </div>
+                ${daysHtml}
+              </div>
+
+              <div class="card-header">
+                <div class="card-emoji">${item.icon || '🏆'}</div>
+                <div class="card-title" onclick="openDetail('${item.id}')">${escapeHtml(item.title)}</div>
+              </div>
+
+              ${item.tags ? `
+                <div class="tags-box">
+                  ${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="card-footer">
+              <div>
+                <div class="footer-date-label">ปิดรับสมัคร</div>
+                <div class="footer-date-val">${formatThaiDate(item.deadlineStr)}</div>
+              </div>
+              <div class="card-btns">
+                <button class="btn-detail" onclick="openDetail('${item.id}')">ข้อมูล</button>
+                <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="btn-link">สมัคร ↗</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Table
+      tableRows.innerHTML = filtered.map(item => {
+        const days = calculateDaysLeft(item.deadlineStr);
+        const isInter = item.level.includes('นานาชาติ');
+        return `
+          <tr>
+            <td>
+              <span class="badge-pill ${isInter ? 'badge-inter' : 'badge-national'}">${escapeHtml(item.level)}</span>
+            </td>
+            <td>
+              <strong style="cursor:pointer; color:#0f172a;" onclick="openDetail('${item.id}')">
+                ${item.icon || '🏆'} ${escapeHtml(item.title)}
+              </strong>
+            </td>
+            <td>${escapeHtml(item.type)}</td>
+            <td>
+              <div>${formatThaiDate(item.deadlineStr)}</div>
+              <div style="font-size:11px; color:#0284c7; font-weight:600;">เหลือ ${days} วัน</div>
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button class="btn-detail" onclick="openDetail('${item.id}')">ดูข้อมูล</button>
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="btn-link">สมัคร ↗</a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function setLevelFilter(lvl) {
+      selectedLevel = lvl;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-lvl') === lvl) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      renderData();
+    }
+
+    function switchView(mode) {
+      currentView = mode;
+      const cardV = document.getElementById('cardView');
+      const tableV = document.getElementById('tableView');
+      const cardB = document.getElementById('viewCardBtn');
+      const tableB = document.getElementById('viewTableBtn');
+
+      if (mode === 'card') {
+        cardV.classList.remove('hidden');
+        tableV.classList.add('hidden');
+        cardB.classList.add('active');
+        tableB.classList.remove('active');
+      } else {
+        cardV.classList.add('hidden');
+        tableV.classList.remove('hidden');
+        cardB.classList.remove('active');
+        tableB.classList.add('active');
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openDetail(id) {
+      const item = items.find(x => x.id === id);
+      if (!item) return;
+
+      const days = calculateDaysLeft(item.deadlineStr);
+      document.getElementById('modalTitle').innerText = item.title;
+      document.getElementById('modalLevel').innerText = item.level;
+      document.getElementById('modalType').innerText = item.type;
+      document.getElementById('modalDeadline').innerText = formatThaiDate(item.deadlineStr);
+      document.getElementById('modalUrlInput').value = item.url;
+      document.getElementById('modalGoBtn').href = item.url;
+
+      document.getElementById('modalBadges').innerHTML = `
+        <span class="badge-pill" style="background:rgba(255,255,255,0.2); color:white;">${escapeHtml(item.level)}</span>
+        <span class="badge-pill" style="background:rgba(0,0,0,0.2); color:white;">${escapeHtml(item.type)}</span>
+      `;
+
+      document.getElementById('modalStatus').innerHTML = days >= 0
+        ? `<span style="color:#15803d;">🟢 เปิดรับสมัคร (เหลือ ${days} วัน)</span>`
+        : `<span style="color:#64748b;">⚪ ปิดรับสมัครแล้ว</span>`;
+
+      openModal('detailModal');
+    }
+
+    function copyModalLink() {
+      const input = document.getElementById('modalUrlInput');
+      input.select();
+      document.execCommand('copy');
+      const btn = document.getElementById('copyBtn');
+      btn.innerText = "คัดลอกแล้ว!";
+      setTimeout(() => { btn.innerText = "คัดลอก"; }, 1500);
+      showToast("คัดลอกลิงก์สำเร็จ");
+    }
+
+    function handleAddItem(e) {
+      e.preventDefault();
+      const title = document.getElementById('addTitle').value.trim();
+      const level = document.getElementById('addLevel').value;
+      const type = document.getElementById('addType').value.trim();
+      const deadline = document.getElementById('addDeadline').value.trim();
+      const url = document.getElementById('addUrl').value.trim();
+
+      items.unshift({
+        id: "c-" + Date.now(),
+        title, level, type, deadlineStr: deadline, url,
+        tags: ["รายการใหม่"],
+        icon: level.includes('นานาชาติ') ? '🌍' : '🇹🇭'
+      });
+
+      closeModal('addModal');
+      e.target.reset();
+      updateStats();
+      renderData();
+      showToast("เพิ่มรายการสำเร็จ");
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 2500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    }
+
+    // Initialize
+    updateStats();
+    renderData();
+  </script>
+</body>
+</html>
