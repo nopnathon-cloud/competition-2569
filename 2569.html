@@ -18,7 +18,7 @@
       color: #1e293b;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      padding-bottom: 40px;
+      padding-bottom: 48px;
     }
 
     /* Container */
@@ -61,12 +61,13 @@
       box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
     }
     .brand-text h1 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: #0f172a;
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .brand-badge {
       font-size: 11px;
@@ -149,6 +150,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
     .stat-label {
       font-size: 12px;
@@ -232,6 +234,7 @@
     .select-group {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .select-ctrl {
       padding: 6px 10px;
@@ -271,6 +274,7 @@
       justify-content: space-between;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
       transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      position: relative;
     }
     .comp-card:hover {
       border-color: #38bdf8;
@@ -305,6 +309,7 @@
       border-radius: 6px;
       background: #e0f2fe;
       color: #0369a1;
+      white-space: nowrap;
     }
     .days-urgent {
       background: #ffe4e6;
@@ -357,6 +362,13 @@
       color: #64748b;
       padding: 2px 6px;
       border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag:hover {
+      background: #e0f2fe;
+      color: #0284c7;
+      border-color: #bae6fd;
     }
 
     .card-footer {
@@ -483,6 +495,11 @@
       width: 100%;
       overflow: hidden;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      animation: modalPop 0.2s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
     .modal-header {
       background: linear-gradient(135deg, #0284c7, #4338ca);
@@ -535,8 +552,8 @@
       background: #f8fafc;
       padding: 12px 20px;
       display: flex;
-      justify-content: flex-end;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
       border-top: 1px solid #e2e8f0;
     }
 
@@ -585,7 +602,6 @@
   </style>
 </head>
 <body>
-
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container nav-inner">
@@ -598,9 +614,10 @@
       </div>
       <div class="nav-actions">
         <div class="view-switch">
-          <button id="viewCardBtn" class="view-btn active" onclick="switchView('card')">🗂️ การ์ด</button>
-          <button id="viewTableBtn" class="view-btn" onclick="switchView('table')">📋 ตาราง</button>
+          <button id="viewCardBtn" class="view-btn active" onclick="switchView('card')" title="แสดงผลแบบการ์ด">🗂️ การ์ด</button>
+          <button id="viewTableBtn" class="view-btn" onclick="switchView('table')" title="แสดงผลแบบตาราง">📋 ตาราง</button>
         </div>
+        <button class="btn-detail" onclick="exportDataCSV()" title="ดาวน์โหลดไฟล์ CSV">📥 ส่งออก</button>
         <button class="btn-add" onclick="openModal('addModal')">➕ เพิ่มรายการ</button>
       </div>
     </div>
@@ -632,7 +649,7 @@
       </div>
       <div class="stat-card">
         <div>
-          <div class="stat-label">ด่วน! ใกล้ปิดรับ</div>
+          <div class="stat-label">ด่วน! ใกล้ปิดรับ (≤ 5 วัน)</div>
           <div id="statUrgent" class="stat-value">0</div>
         </div>
         <div class="stat-icon icon-rose">⏳</div>
@@ -641,7 +658,7 @@
 
     <!-- Filter & Search Controls -->
     <div class="control-panel">
-      <input type="text" id="searchInput" class="search-bar" placeholder="🔎 ค้นหาชื่อรายการแข่ง, หมวดหมู่, ประเภท..." oninput="renderData()">
+      <input type="text" id="searchInput" class="search-bar" placeholder="🔎 ค้นหาชื่อรายการแข่ง, แท็ก, หน่วยงาน, หรือประเภท..." oninput="renderData()">
       
       <div class="filter-row">
         <div class="tabs-group">
@@ -651,11 +668,19 @@
         </div>
 
         <div class="select-group">
+          <select id="statusFilter" class="select-ctrl" onchange="renderData()">
+            <option value="all">สถานะ: ทั้งหมด</option>
+            <option value="open">🟢 กำลังเปิดรับ</option>
+            <option value="closed">⚪ ปิดรับแล้ว</option>
+            <option value="urgent">⚠️ ด่วนมาก (≤ 3 วัน)</option>
+          </select>
+
           <select id="typeFilter" class="select-ctrl" onchange="renderData()">
             <option value="all">รูปแบบ: ทั้งหมด</option>
             <option value="เดี่ยว">เดี่ยว</option>
             <option value="กลุ่ม">กลุ่ม</option>
           </select>
+
           <select id="sortOrder" class="select-ctrl" onchange="renderData()">
             <option value="deadline-asc">เรียง: วันปิดรับใกล้สุด</option>
             <option value="deadline-desc">เรียง: วันปิดรับไกลสุด</option>
@@ -675,8 +700,9 @@
             <th>ระดับ</th>
             <th>ชื่อรายการแข่งขัน</th>
             <th>ประเภท</th>
+            <th>แท็ก</th>
             <th>วันปิดรับสมัคร</th>
-            <th style="text-align: right;">เปิดดู</th>
+            <th style="text-align: right;">จัดการ / สมัคร</th>
           </tr>
         </thead>
         <tbody id="tableRows"></tbody>
@@ -686,16 +712,16 @@
     <div id="emptyView" class="empty-state hidden">
       <div style="font-size: 36px;">🔍</div>
       <h3>ไม่พบรายการแข่งขันที่ตรงกับเงื่อนไข</h3>
-      <p>ลองปรับคำค้นหาหรือตัวกรองใหม่อีกครั้ง</p>
+      <p>ลองปรับคำค้นหาหรือเปลี่ยนตัวกรองใหม่อีกครั้ง</p>
     </div>
   </div>
 
   <!-- Detail Modal -->
-  <div id="detailModal" class="modal-overlay hidden">
+  <div id="detailModal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'detailModal')">
     <div class="modal-card">
       <div class="modal-header">
-        <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
-        <div id="modalBadges" style="margin-bottom: 6px;"></div>
+        <button class="modal-close" onclick="closeModal('detailModal')" title="ปิดหน้าต่าง">✕</button>
+        <div id="modalBadges" style="margin-bottom: 6px; display:flex; gap:6px;"></div>
         <h2 id="modalTitle" style="font-size: 16px; font-weight: 700; line-height: 1.4;"></h2>
       </div>
       <div class="modal-body">
@@ -705,6 +731,7 @@
           <div class="info-item"><span class="lbl">วันปิดรับสมัคร:</span><span id="modalDeadline" class="val" style="color:#e11d48;"></span></div>
           <div class="info-item"><span class="lbl">สถานะ:</span><span id="modalStatus" class="val"></span></div>
         </div>
+        <div id="modalTags" class="tags-box" style="margin-bottom:12px;"></div>
         <label class="form-label">ลิงก์รับสมัคร / ข้อมูลทางการ</label>
         <div style="display: flex; gap: 6px;">
           <input type="text" id="modalUrlInput" class="form-input" readonly>
@@ -712,17 +739,20 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-detail" onclick="closeModal('detailModal')">ปิด</button>
-        <a id="modalGoBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn-link">ไปยังหน้าสมัคร ↗</a>
+        <button id="modalDeleteBtn" class="btn-detail" style="color:#dc2626; border-color:#fecaca;" onclick="deleteCurrentItem()">🗑️ ลบรายการนี้</button>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-detail" onclick="closeModal('detailModal')">ปิด</button>
+          <a id="modalGoBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn-link">ไปยังหน้าสมัคร ↗</a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Add Item Modal -->
-  <div id="addModal" class="modal-overlay hidden">
+  <div id="addModal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'addModal')">
     <div class="modal-card">
       <div class="modal-header" style="background: #0f172a;">
-        <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+        <button class="modal-close" onclick="closeModal('addModal')" title="ปิดหน้าต่าง">✕</button>
         <h2 style="font-size: 16px; font-weight: 700;">➕ เพิ่มรายการแข่งขันใหม่</h2>
       </div>
       <form onsubmit="handleAddItem(event)" style="padding: 20px;">
@@ -743,9 +773,23 @@
             <input type="text" id="addType" class="form-input" required placeholder="เช่น เดี่ยว หรือ กลุ่ม 3-5 คน">
           </div>
         </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">วันปิดรับสมัคร (ปฏิทิน) *</label>
+            <input type="date" id="addDatePick" class="form-input" required onchange="syncDateToText()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">รูปแบบย่อ (วว/ดด/ปป)</label>
+            <input type="text" id="addDeadline" class="form-input" required placeholder="เช่น 15/09/26">
+          </div>
+        </div>
         <div class="form-group">
-          <label class="form-label">วันปิดรับสมัคร (วว/ดด/ปป) *</label>
-          <input type="text" id="addDeadline" class="form-input" required placeholder="เช่น 15/09/26">
+          <label class="form-label">แท็ก (คั่นด้วยจุลภาค)</label>
+          <input type="text" id="addTags" class="form-input" placeholder="เช่น AI, แข่งขันธุรกิจ, ม.ปลาย">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ไอคอนอิโมจิ</label>
+          <input type="text" id="addEmoji" class="form-input" placeholder="เช่น 🚀 หรือ 🎨" maxlength="4">
         </div>
         <div class="form-group">
           <label class="form-label">ลิงก์รับสมัคร (URL) *</label>
@@ -761,13 +805,13 @@
 
   <!-- Toast Alert -->
   <div id="toast" class="toast hidden">
-    <span>✅</span>
+    <span id="toastIcon">✅</span>
     <span id="toastMsg">ดำเนินการเรียบร้อย</span>
   </div>
 
   <script>
-    // Data list from Google Sheet
-    const initialCompetitions = [
+    // Initial Data list from Google Sheet / AppSheet
+    const defaultCompetitions = [
       {
         id: "c1",
         level: "ระดับชาติ",
@@ -831,18 +875,65 @@
       {
         id: "c7",
         level: "ระดับชาติ",
-        title: "Youth for change: The mindful future contest",
+        title: "การประกวดเยาวชนเพื่ออนาคตที่มีสติ (Youth for Change)",
         type: "กลุ่ม 3-5 คน",
         deadlineStr: "13/09/26",
-        url: "https://www.camphub.in.th/youth-for-change-the-mindful-future-contest/",
-        tags: ["เพื่อสังคม", "เยาวชน", "Social Impact"],
-        icon: "🤝"
+        url: "https://dekport.com/competition/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%A7%E0%B8%94%E0%B9%80%E0%B8%A2%E0%B8%B2%E0%B8%A7%E0%B8%8A%E0%B8%99-%E0%B9%80%E0%B8%9E%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%95%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%AA%E0%B8%95%E0%B8%B4",
+        tags: ["จิตวิทยา", "จุฬาฯ", "เพื่อสังคม", "ทุนการศึกษา"],
+        icon: "🧠"
+      },
+      {
+        id: "c8",
+        level: "ระดับชาติ",
+        title: "NTT DATA Digital Innovation Challenge 2026",
+        type: "กลุ่ม 2-4 คน",
+        deadlineStr: "18/09/26",
+        url: "https://dekport.com/competition/ntt-data-digital-innovation-challenge-2026",
+        tags: ["นวัตกรรม", "ดิจิทัล", "เทคโนโลยี", "Innovation"],
+        icon: "💻"
       }
     ];
 
-    let items = [...initialCompetitions];
+    // Load from LocalStorage if exists (with auto-sync for c7 update)
+    const STORAGE_KEY = 'portal_competitions_2569';
+    let items = [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        let parsed = JSON.parse(stored);
+        parsed = parsed.map(item => {
+          if (item.id === 'c7') {
+            return {
+              ...item,
+              title: "การประกวดเยาวชนเพื่ออนาคตที่มีสติ (Youth for Change)",
+              url: "https://dekport.com/competition/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%A7%E0%B8%94%E0%B9%80%E0%B8%A2%E0%B8%B2%E0%B8%A7%E0%B8%8A%E0%B8%99-%E0%B9%80%E0%B8%9E%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%95%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%AA%E0%B8%95%E0%B8%B4",
+              tags: ["จิตวิทยา", "จุฬาฯ", "เพื่อสังคม", "ทุนการศึกษา"],
+              icon: "🧠"
+            };
+          }
+          return item;
+        });
+        const existingIds = new Set(parsed.map(x => x.id));
+        const missingDefaults = defaultCompetitions.filter(x => !existingIds.has(x.id));
+        items = [...parsed, ...missingDefaults];
+      } else {
+        items = [...defaultCompetitions];
+      }
+    } catch(e) {
+      items = [...defaultCompetitions];
+    }
+
     let selectedLevel = 'all';
     let currentView = 'card';
+    let activeModalItemId = null;
+
+    function saveItems() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      } catch(e) {
+        console.error("Storage save failed", e);
+      }
+    }
 
     // Date Helpers
     function parseDate(str) {
@@ -861,7 +952,7 @@
 
     function calculateDaysLeft(deadlineStr) {
       const target = parseDate(deadlineStr);
-      // Fixed base date: 30 August 2026
+      // Fixed base reference date for 2569 competition cycle: 30 August 2026
       const baseToday = new Date(2026, 7, 30);
       const diff = target.getTime() - baseToday.getTime();
       return Math.ceil(diff / (1000 * 60 * 60 * 24));
@@ -887,13 +978,18 @@
     function renderData() {
       const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const typeFilter = document.getElementById('typeFilter').value;
+      const statusFilter = document.getElementById('statusFilter').value;
       const sortOrder = document.getElementById('sortOrder').value;
 
       let filtered = items.filter(item => {
+        const days = calculateDaysLeft(item.deadlineStr);
+        const tagsStr = item.tags ? item.tags.join(' ').toLowerCase() : '';
+
         const matchQuery = !query || 
           item.title.toLowerCase().includes(query) ||
           item.level.toLowerCase().includes(query) ||
-          item.type.toLowerCase().includes(query);
+          item.type.toLowerCase().includes(query) ||
+          tagsStr.includes(query);
 
         const matchLevel = (selectedLevel === 'all') || (item.level.toLowerCase() === selectedLevel.toLowerCase());
 
@@ -901,7 +997,12 @@
         if (typeFilter === 'เดี่ยว') matchType = item.type.includes('เดี่ยว');
         if (typeFilter === 'กลุ่ม') matchType = item.type.includes('กลุ่ม');
 
-        return matchQuery && matchLevel && matchType;
+        let matchStatus = true;
+        if (statusFilter === 'open') matchStatus = days >= 0;
+        if (statusFilter === 'closed') matchStatus = days < 0;
+        if (statusFilter === 'urgent') matchStatus = days >= 0 && days <= 3;
+
+        return matchQuery && matchLevel && matchType && matchStatus;
       });
 
       // Sorting
@@ -934,7 +1035,7 @@
         if (days < 0) {
           daysHtml = `<span class="days-badge" style="background:#f1f5f9; color:#64748b;">ปิดรับแล้ว</span>`;
         } else if (isUrgent) {
-          daysHtml = `<span class="days-badge days-urgent">⚠️ ด่วน! ${days} วัน</span>`;
+          daysHtml = `<span class="days-badge days-urgent">⚠️ ด่วน! เหลือ ${days} วัน</span>`;
         }
 
         return `
@@ -953,9 +1054,9 @@
                 <div class="card-title" onclick="openDetail('${item.id}')">${escapeHtml(item.title)}</div>
               </div>
 
-              ${item.tags ? `
+              ${item.tags && item.tags.length ? `
                 <div class="tags-box">
-                  ${item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}
+                  ${item.tags.map(t => `<span class="tag" onclick="filterByTag('${escapeHtml(t)}')">#${escapeHtml(t)}</span>`).join('')}
                 </div>
               ` : ''}
             </div>
@@ -990,8 +1091,15 @@
             </td>
             <td>${escapeHtml(item.type)}</td>
             <td>
+              <div style="display:flex; gap:3px; flex-wrap:wrap;">
+                ${(item.tags || []).map(t => `<span class="tag" onclick="filterByTag('${escapeHtml(t)}')">#${escapeHtml(t)}</span>`).join('')}
+              </div>
+            </td>
+            <td>
               <div>${formatThaiDate(item.deadlineStr)}</div>
-              <div style="font-size:11px; color:#0284c7; font-weight:600;">เหลือ ${days} วัน</div>
+              <div style="font-size:11px; color:${days < 0 ? '#64748b' : (days <= 3 ? '#e11d48' : '#0284c7')}; font-weight:600;">
+                ${days < 0 ? 'ปิดรับแล้ว' : `เหลือ ${days} วัน`}
+              </div>
             </td>
             <td style="text-align: right; white-space: nowrap;">
               <button class="btn-detail" onclick="openDetail('${item.id}')">ดูข้อมูล</button>
@@ -1012,6 +1120,13 @@
         }
       });
       renderData();
+    }
+
+    function filterByTag(tagName) {
+      const search = document.getElementById('searchInput');
+      search.value = tagName;
+      renderData();
+      showToast(`กรองรายการแท็ก: #${tagName}`);
     }
 
     function switchView(mode) {
@@ -1042,10 +1157,17 @@
       document.getElementById(id).classList.add('hidden');
     }
 
+    function handleBackdropClick(e, id) {
+      if (e.target.id === id) {
+        closeModal(id);
+      }
+    }
+
     function openDetail(id) {
       const item = items.find(x => x.id === id);
       if (!item) return;
 
+      activeModalItemId = id;
       const days = calculateDaysLeft(item.deadlineStr);
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalLevel').innerText = item.level;
@@ -1063,7 +1185,25 @@
         ? `<span style="color:#15803d;">🟢 เปิดรับสมัคร (เหลือ ${days} วัน)</span>`
         : `<span style="color:#64748b;">⚪ ปิดรับสมัครแล้ว</span>`;
 
+      // Tags
+      const tagsBox = document.getElementById('modalTags');
+      if (item.tags && item.tags.length) {
+        tagsBox.innerHTML = item.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
+      } else {
+        tagsBox.innerHTML = '';
+      }
+
       openModal('detailModal');
+    }
+
+    function deleteCurrentItem() {
+      if (!activeModalItemId) return;
+      items = items.filter(x => x.id !== activeModalItemId);
+      saveItems();
+      closeModal('detailModal');
+      updateStats();
+      renderData();
+      showToast("ลบรายการแข่งขันเรียบร้อย", "🗑️");
     }
 
     function copyModalLink() {
@@ -1076,6 +1216,16 @@
       showToast("คัดลอกลิงก์สำเร็จ");
     }
 
+    function syncDateToText() {
+      const dateVal = document.getElementById('addDatePick').value;
+      if (!dateVal) return;
+      const parts = dateVal.split('-');
+      if (parts.length === 3) {
+        const yr = parts[0].slice(-2);
+        document.getElementById('addDeadline').value = `${parts[2]}/${parts[1]}/${yr}`;
+      }
+    }
+
     function handleAddItem(e) {
       e.preventDefault();
       const title = document.getElementById('addTitle').value.trim();
@@ -1083,23 +1233,66 @@
       const type = document.getElementById('addType').value.trim();
       const deadline = document.getElementById('addDeadline').value.trim();
       const url = document.getElementById('addUrl').value.trim();
+      const tagInput = document.getElementById('addTags').value.trim();
+      const emojiInput = document.getElementById('addEmoji').value.trim();
+
+      const tags = tagInput 
+        ? tagInput.split(',').map(t => t.trim()).filter(Boolean)
+        : ["รายการใหม่"];
 
       items.unshift({
         id: "c-" + Date.now(),
-        title, level, type, deadlineStr: deadline, url,
-        tags: ["รายการใหม่"],
-        icon: level.includes('นานาชาติ') ? '🌍' : '🇹🇭'
+        title,
+        level,
+        type,
+        deadlineStr: deadline,
+        url,
+        tags: tags,
+        icon: emojiInput || (level.includes('นานาชาติ') ? '🌍' : '🇹🇭')
       });
 
+      saveItems();
       closeModal('addModal');
       e.target.reset();
       updateStats();
       renderData();
-      showToast("เพิ่มรายการสำเร็จ");
+      showToast("เพิ่มรายการสำเร็จแล้ว");
     }
 
-    function showToast(msg) {
+    function exportDataCSV() {
+      if (items.length === 0) {
+        showToast("ไม่มีข้อมูลสำหรับส่งออก", "⚠️");
+        return;
+      }
+      let csvContent = "\uFEFF"; // UTF-8 BOM
+      csvContent += "ID,ระดับ,ชื่อรายการแข่งขัน,ประเภท,วันปิดรับสมัคร,แท็ก,ลิงก์\n";
+      items.forEach(item => {
+        const row = [
+          `"${item.id}"`,
+          `"${item.level}"`,
+          `"${item.title.replace(/"/g, '""')}"`,
+          `"${item.type}"`,
+          `"${item.deadlineStr}"`,
+          `"${(item.tags || []).join(';')}"`,
+          `"${item.url}"`
+        ];
+        csvContent += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `competitions_2569_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("ส่งออกไฟล์ CSV สำเร็จ", "📥");
+    }
+
+    function showToast(msg, icon = "✅") {
       const t = document.getElementById('toast');
+      document.getElementById('toastIcon').innerText = icon;
       document.getElementById('toastMsg').innerText = msg;
       t.classList.remove('hidden');
       setTimeout(() => t.classList.add('hidden'), 2500);
@@ -1109,6 +1302,14 @@
       if (!str) return '';
       return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
     }
+
+    // Keyboard ESC to close modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('detailModal');
+        closeModal('addModal');
+      }
+    });
 
     // Initialize
     updateStats();
