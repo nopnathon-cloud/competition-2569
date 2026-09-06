@@ -649,7 +649,7 @@
       </div>
       <div class="stat-card">
         <div>
-          <div class="stat-label">ด่วน! ใกล้ปิดรับ (≤ 5 วัน)</div>
+          <div class="stat-label">ด่วน! ใกล้ปิดรับ (≤ 3 วัน)</div>
           <div id="statUrgent" class="stat-value">0</div>
         </div>
         <div class="stat-icon icon-rose">⏳</div>
@@ -952,10 +952,13 @@
 
     function calculateDaysLeft(deadlineStr) {
       const target = parseDate(deadlineStr);
-      // Fixed base reference date for 2569 competition cycle: 30 August 2026
-      const baseToday = new Date(2026, 7, 30);
-      const diff = target.getTime() - baseToday.getTime();
-      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+      const now = new Date();
+      // คำนวณเทียบกับวันปัจจุบันจริงแบบเรียลไทม์ (ตั้งเวลาเป็น 00:00:00 เพื่อคำนวณจำนวนเต็มวัน)
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const targetDate = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+      
+      const diffTime = targetDate.getTime() - today.getTime();
+      return Math.round(diffTime / (1000 * 60 * 60 * 24));
     }
 
     function formatThaiDate(str) {
@@ -971,7 +974,7 @@
       document.getElementById('statNational').innerText = items.filter(x => x.level.includes('ระดับชาติ')).length;
       document.getElementById('statUrgent').innerText = items.filter(x => {
         const d = calculateDaysLeft(x.deadlineStr);
-        return d >= 0 && d <= 5;
+        return d >= 0 && d <= 3;
       }).length;
     }
 
@@ -1034,6 +1037,8 @@
         let daysHtml = `<span class="days-badge">เหลือ ${days} วัน</span>`;
         if (days < 0) {
           daysHtml = `<span class="days-badge" style="background:#f1f5f9; color:#64748b;">ปิดรับแล้ว</span>`;
+        } else if (days === 0) {
+          daysHtml = `<span class="days-badge days-urgent">🔥 วันนี้วันสุดท้าย!</span>`;
         } else if (isUrgent) {
           daysHtml = `<span class="days-badge days-urgent">⚠️ ด่วน! เหลือ ${days} วัน</span>`;
         }
@@ -1098,7 +1103,7 @@
             <td>
               <div>${formatThaiDate(item.deadlineStr)}</div>
               <div style="font-size:11px; color:${days < 0 ? '#64748b' : (days <= 3 ? '#e11d48' : '#0284c7')}; font-weight:600;">
-                ${days < 0 ? 'ปิดรับแล้ว' : `เหลือ ${days} วัน`}
+                ${days < 0 ? 'ปิดรับแล้ว' : (days === 0 ? '🔥 วันนี้วันสุดท้าย!' : `เหลือ ${days} วัน`)}
               </div>
             </td>
             <td style="text-align: right; white-space: nowrap;">
@@ -1181,9 +1186,15 @@
         <span class="badge-pill" style="background:rgba(0,0,0,0.2); color:white;">${escapeHtml(item.type)}</span>
       `;
 
-      document.getElementById('modalStatus').innerHTML = days >= 0
-        ? `<span style="color:#15803d;">🟢 เปิดรับสมัคร (เหลือ ${days} วัน)</span>`
-        : `<span style="color:#64748b;">⚪ ปิดรับสมัครแล้ว</span>`;
+      let statusHtml = '';
+      if (days < 0) {
+        statusHtml = `<span style="color:#64748b;">⚪ ปิดรับสมัครแล้ว</span>`;
+      } else if (days === 0) {
+        statusHtml = `<span style="color:#e11d48; font-weight:700;">🔥 วันนี้วันสุดท้าย!</span>`;
+      } else {
+        statusHtml = `<span style="color:#15803d;">🟢 เปิดรับสมัคร (เหลือ ${days} วัน)</span>`;
+      }
+      document.getElementById('modalStatus').innerHTML = statusHtml;
 
       // Tags
       const tagsBox = document.getElementById('modalTags');
